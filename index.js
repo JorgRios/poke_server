@@ -31,45 +31,42 @@ io.on('connection', (socket) => {
       console.log('reconectando usuario')
     })
 
-    // socket.on('pelea', (pokemon_id) => {
-    //     console.log('Nueva pelea creada')
-    //     let user = obtenerDatosUsuarioporid(users,socket.id);
-    //     if(user.pokemon == 0){
-    //         /**el usuario no tiene pokemon y se le asigna el q entro */
-    //         actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
-    //     }else{
-    //         if(user.pokemon != pokemon_id){
-    //             user.nivel = 1
-    //         }
-    //     }        
-    //     agregarPelea(fights, user.nombre)
-    //     console.log("Peleas :")
-    //     console.log(fights)
-    //     console.log('Usuarios :')
-    //     console.log(users)
-    //     io.emit('lista_peleas', fights);
-    // })
+    socket.on('pelea', (pokemon_id) => {
+        console.log('Nueva pelea creada')
+        let user = obtenerDatosUsuarioporid(users,socket.id);
+        if(user.pokemon == 0){
+            /**el usuario no tiene pokemon y se le asigna el q entro */
+            actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
+        }else{
+            if(user.pokemon != pokemon_id){
+                user.nivel = 1
+            }
+        }        
+        agregarPelea(fights, user.nombre)
+        console.log("Peleas :")
+        console.log(fights)
+        console.log('Usuarios :')
+        console.log(users)
+        io.emit('lista_peleas', fights);
+    })
 
-    // socket.on('buscar_pelea', (pokemon_id) => {
-    //     actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
-    //     io.emit('lista_peleas', fights);
-    // })
-
-
-
-    // socket.on('aceptar', (retador) => {
-    //     pelea = pelearYa(fights,retador, socket.id);
-    //     console.log('Todas las Peleas: ')
-    //     console.log(fights)
-    //     console.log('la Pelea: ')
-    //     console.log(pelea)
-    //     io.emit('lista_peleas', fights);
-    //     io.emit('arena', pelea);
-    // })
+    socket.on('buscar_pelea', (pokemon_id) => {
+        actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
+        io.emit('lista_peleas', fights);
+    })
+    
+    socket.on('aceptar', (retador) => {
+        pelea = pelearYa(fights,retador, socket.id);
+        console.log('Todas las Peleas: ')
+        console.log(fights)
+        console.log('la Pelea: ')
+        console.log(pelea)
+        io.emit('lista_peleas', fights);
+        io.emit('arena', pelea);
+    })
     /**
      * ya con las demas funciones
      */
-
 
 })
 
