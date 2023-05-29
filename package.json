@@ -1,0 +1,22 @@
+{
+  "name": "poke_server",
+  "version": "1.0.0",
+  "description": "servidor de la pokedex para chat y pelea",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "poke_server"
+  ],
+  "author": "Angus",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
