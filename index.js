@@ -14,13 +14,11 @@ io.on('connection', (socket) => {
     socket.on('login', (nombre) => {
         verificarUsuarioYModificar(users, nombre, socket.id);
         console.log('Usuarios :')
-        res.send('<br> Usuario nuevo logueado '+nombre);
         console.log(users)
         io.emit('lista_usuarios', users);
     });
     socket.on('disconnect', () => {
         let user = obtenerDatosUsuarioporid(users,socket.id);
-        res.send('<br> Usuario '+user.nombre+' Desconectado');
         if(user == null){
             console.log("el usuario "+socket.id+" se ha desconectado");    
         }
@@ -31,7 +29,6 @@ io.on('connection', (socket) => {
     })
     socket.on('reconect',() => {
       console.log('reconectando usuario')
-      res.send('<br> Reconectando '+socket.id);
     })
 
     // socket.on('pelea', (pokemon_id) => {
