@@ -54,22 +54,57 @@ io.on('connection', (socket) => {
         actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
         io.emit('lista_peleas', fights);
     })
-    
+
     socket.on('aceptar', (retador) => {
-        pelea = pelearYa(fights,retador, socket.id);
-        console.log('Todas las Peleas: ')
-        console.log(fights)
-        console.log('la Pelea: ')
-        console.log(pelea)
-        io.emit('lista_peleas', fights);
-        io.emit('arena', pelea);
+      pelea = pelearYa(fights,retador, socket.id);
+      console.log('Todas las Peleas: ')
+      console.log(fights)
+      console.log('la Pelea: ')
+      console.log(pelea)
+      io.emit('lista_peleas', fights);
+      io.emit('arena', pelea);
     })
+
+    socket.on('atacar',(danio) => {
+      console.log('alguien esta mandando un ataque de daño '+danio)
+      let user = obtenerDatosUsuarioporid(users,socket.id);
+      let pelea_id = buscarIdPorNombre(fights, user.nombre)
+      if(fights[pelea_id].retador == user.nombre){
+        fights[pelea_id].saludpk2 = fights[pelea_id].saludpk2-danio;
+        if(fights[pelea_id].saludpk2<=0)
+        fights[pelea_id].saludpk2 = 0
+        console.log('Retador Ataco!!')
+        console.log('salud pk2 '+fights[pelea_id].saludpk2)
+      }else{
+        fights[pelea_id].saludpk1 = fights[pelea_id].saludpk1-danio;
+        if(fights[pelea_id].saludpk1<=0)
+        fights[pelea_id].saludpk1 = 0
+        console.log('Adversario Ataco!!')
+        console.log('salud pk1 '+fights[pelea_id].saludpk2)
+      }
+
+      if(fights[pelea_id].saludpk2 == 0 || fights[pelea_id].saludpk1 == 0){
+        console.log('Pelea termino!!!');
+        fights[pelea_id].estado = 'Finalizado';
+        io.emit('lista_peleas', fights);
+        io.emit('arena', fights[pelea_id]);
+        io.emit('finalizada', deliverar(fights[pelea_id]))
+        //emite finalizar
+      }else{
+        console.log('pelea continua...')
+        ///emite arena!!
+        io.emit('lista_peleas', fights);
+        io.emit('arena', fights[pelea_id]);
+      }
+      console.log(fights[pelea_id])
+    })
+
+
     /**
      * ya con las demas funciones
      */
 
 })
-
 
 function pelearYa(peleas, retador, idUsuario) {
     const pelea = peleas.find(pelea => pelea.retador === retador && pelea.estado === 'espera');
@@ -77,6 +112,7 @@ function pelearYa(peleas, retador, idUsuario) {
     if (pelea) {
       pelea.adversario = usuario.nombre;
       pelea.pk2 = usuario.pokemon;
+      pelea.saludpk2 = 100;
       pelea.estado = 'progreso';
       pelea.ganador = null;
       console.log(`La pelea entre ${retador} y ${usuario.nombre} ha pasado al estado 'progreso'.`);
@@ -94,6 +130,17 @@ function desconectarUsuario(arr, id) {
       break;
     }
   }
+}
+
+function deliverar(arr){
+  let ganador = '';
+  if(arr.saludpk1 == 0){
+    ganador = arr.adversario;
+  }
+  if(arr.saludpk2 == 0){
+    ganador = arr.retador;
+  }
+  return ganador;
 }
 
 
@@ -165,14 +212,24 @@ function obtenerDatosUsuarioporid(arr, id) {
 
 
 function actualizarDatosUsuario(users, id, nuevoPokemon, nuevoNivel) {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].id === id) {
-        users[i].pokemon = nuevoPokemon;
-        users[i].nivel = nuevoNivel;
-        break;
-      }
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id === id) {
+      users[i].pokemon = nuevoPokemon;
+      users[i].nivel = nuevoNivel;
+      break;
     }
   }
+}
+
+function buscarIdPorNombre(peleas, nombre) {
+  for (let i = 0; i < peleas.length; i++) {
+    const pelea = peleas[i];
+    if (pelea.estado === 'progreso' && (pelea.retador === nombre || pelea.adversario === nombre)) {
+      return i;
+    }
+  }
+  return null;
+}
 
 httpServer.listen(port, () => console.log(`Servidor activo en puerto:  ${port}`));
 
