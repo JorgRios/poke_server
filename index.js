@@ -14,11 +14,13 @@ io.on('connection', (socket) => {
     socket.on('login', (nombre) => {
         verificarUsuarioYModificar(users, nombre, socket.id);
         console.log('Usuarios :')
+        res.send('<br> Usuario nuevo logueado '+nombre);
         console.log(users)
         io.emit('lista_usuarios', users);
     });
     socket.on('disconnect', () => {
         let user = obtenerDatosUsuarioporid(users,socket.id);
+        res.send('<br> Usuario '+user.nombre+' Desconectado');
         if(user == null){
             console.log("el usuario "+socket.id+" se ha desconectado");    
         }
@@ -27,42 +29,46 @@ io.on('connection', (socket) => {
         console.log(users)
         io.emit('lista_usuarios', users);
     })
-
-    socket.on('pelea', (pokemon_id) => {
-        console.log('Nueva pelea creada')
-        let user = obtenerDatosUsuarioporid(users,socket.id);
-        if(user.pokemon == 0){
-            /**el usuario no tiene pokemon y se le asigna el q entro */
-            actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
-        }else{
-            if(user.pokemon != pokemon_id){
-                user.nivel = 1
-            }
-        }        
-        agregarPelea(fights, user.nombre)
-        console.log("Peleas :")
-        console.log(fights)
-        console.log('Usuarios :')
-        console.log(users)
-        io.emit('lista_peleas', fights);
+    socket.on('reconect',() => {
+      console.log('reconectando usuario')
+      res.send('<br> Reconectando '+socket.id);
     })
 
-    socket.on('buscar_pelea', (pokemon_id) => {
-        actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
-        io.emit('lista_peleas', fights);
-    })
+    // socket.on('pelea', (pokemon_id) => {
+    //     console.log('Nueva pelea creada')
+    //     let user = obtenerDatosUsuarioporid(users,socket.id);
+    //     if(user.pokemon == 0){
+    //         /**el usuario no tiene pokemon y se le asigna el q entro */
+    //         actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
+    //     }else{
+    //         if(user.pokemon != pokemon_id){
+    //             user.nivel = 1
+    //         }
+    //     }        
+    //     agregarPelea(fights, user.nombre)
+    //     console.log("Peleas :")
+    //     console.log(fights)
+    //     console.log('Usuarios :')
+    //     console.log(users)
+    //     io.emit('lista_peleas', fights);
+    // })
+
+    // socket.on('buscar_pelea', (pokemon_id) => {
+    //     actualizarDatosUsuario(users, socket.id , pokemon_id, 1)
+    //     io.emit('lista_peleas', fights);
+    // })
 
 
 
-    socket.on('aceptar', (retador) => {
-        pelea = pelearYa(fights,retador, socket.id);
-        console.log('Todas las Peleas: ')
-        console.log(fights)
-        console.log('la Pelea: ')
-        console.log(pelea)
-        io.emit('lista_peleas', fights);
-        io.emit('arena', pelea);
-    })
+    // socket.on('aceptar', (retador) => {
+    //     pelea = pelearYa(fights,retador, socket.id);
+    //     console.log('Todas las Peleas: ')
+    //     console.log(fights)
+    //     console.log('la Pelea: ')
+    //     console.log(pelea)
+    //     io.emit('lista_peleas', fights);
+    //     io.emit('arena', pelea);
+    // })
     /**
      * ya con las demas funciones
      */
@@ -84,9 +90,7 @@ function pelearYa(peleas, retador, idUsuario) {
     } else {
       console.log(`No se encontró una pelea en espera para el retador ${retador}.`);
       return null;
-      
     }
-
 }
 
 function desconectarUsuario(arr, id) {
