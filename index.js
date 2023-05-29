@@ -2,10 +2,6 @@ const {Socket} = require("socket.io");
 const app = require('express')();
 const httpServer = require('http').createServer(app);
 
-app.get('/', (req, res) => {
-  res.send('PokeServer Arriba!');
-}) 
-
 const io = require('socket.io')(httpServer, {
     cors: {origin : '*'}
 });
@@ -181,3 +177,7 @@ function actualizarDatosUsuario(users, id, nuevoPokemon, nuevoNivel) {
   }
 
 httpServer.listen(port, () => console.log(`Servidor activo en puerto:  ${port}`));
+
+app.get('/', (req, res) => {
+  res.send('PokeServer Arriba! en puerto: '+port);
+}) 
