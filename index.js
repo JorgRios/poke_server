@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
 
     socket.on('aceptar', (retador) => {
         pelea = pelearYa(fights,retador, socket.id);
-        console.log('Peleas: ')
+        console.log('Todas las Peleas: ')
         console.log(fights)
         console.log('la Pelea: ')
         console.log(pelea)
