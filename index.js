@@ -2,6 +2,10 @@ const {Socket} = require("socket.io");
 const app = require('express')();
 const httpServer = require('http').createServer(app);
 
+app.get('/', (req, res) => {
+  res.send('PokeServer Arriba!');
+}) 
+
 const io = require('socket.io')(httpServer, {
     cors: {origin : '*'}
 });
