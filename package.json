@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "nodemon test.js"
   },
   "keywords": [
     "poke_server"
@@ -13,6 +14,7 @@
   "author": "Angus",
   "license": "MIT",
   "dependencies": {
+    "@socket.io/admin-ui": "^0.5.1",
     "express": "^4.18.2",
     "socket.io": "^4.6.1"
   },

@@ -1,10 +1,17 @@
-const {Socket} = require("socket.io");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 const app = require('express')();
-const httpServer = require('http').createServer(app);
 
-const io = require('socket.io')(httpServer, {
-    cors: {origin : '*'}
+const httpServer = createServer();
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
 });
+
 
 const port = process.env.PORT || 3000;
 const users = [];
@@ -231,6 +238,11 @@ function buscarIdPorNombre(peleas, nombre) {
   return null;
 }
 
+instrument(io, {
+  auth: false,
+  mode: "development",
+});
+ 
 httpServer.listen(port, () => console.log(`Servidor activo en puerto:  ${port}`));
 
 app.get('/', (req, res) => {
